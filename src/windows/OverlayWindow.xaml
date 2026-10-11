@@ -148,6 +148,14 @@
                         Icon="{ui:SymbolIcon color16,
                                              Filled=False}"
                         ToolTip="{DynamicResource Overlay_TipFontColor}" />
+                    <ui:Button
+                        x:Name="FontAlignButton"
+                        Background="#FFAAAAAA"
+                        Click="FontAlignCycle_Click"
+                        Cursor="Hand"
+                        Icon="{ui:SymbolIcon TextAlignLeft20,
+                                             Filled=False}"
+                        ToolTip="{DynamicResource Overlay_TipFontAlign}" />
 
                     <ui:Button
                         x:Name="OpacityIncrease"
@@ -192,6 +200,14 @@
                         Icon="{ui:SymbolIcon ArrowSyncCircle20,
                                              Filled=False}"
                         ToolTip="{DynamicResource Overlay_TipSwitchMode}" />
+                    <ui:Button
+                        x:Name="DockButton"
+                        Background="#FFAAAAAA"
+                        Click="DockCycle_Click"
+                        Cursor="Hand"
+                        Icon="{ui:SymbolIcon Drag20,
+                                             Filled=False}"
+                        ToolTip="{DynamicResource Overlay_TipDock}" />
                     <ui:Button
                         x:Name="ClickThrough"
                         Background="#FFAAAAAA"

@@ -168,11 +168,13 @@
     <sys:String x:Key="Overlay_TipStrokeDecrease">Font Stroke Decrease</sys:String>
     <sys:String x:Key="Overlay_TipFontBold">Font Bold</sys:String>
     <sys:String x:Key="Overlay_TipFontColor">Font Color</sys:String>
+    <sys:String x:Key="Overlay_TipFontAlign">Font Alignment (Left / Center / Right)</sys:String>
     <sys:String x:Key="Overlay_TipOpacityIncrease">Background Opacity Increase</sys:String>
     <sys:String x:Key="Overlay_TipOpacityDecrease">Background Opacity Decrease</sys:String>
     <sys:String x:Key="Overlay_TipBackgroundColor">Background Color</sys:String>
     <sys:String x:Key="Overlay_TipOnlyMode">Show only subtitles or translations</sys:String>
     <sys:String x:Key="Overlay_TipSwitchMode">Switch the order of subtitles and translations</sys:String>
+    <sys:String x:Key="Overlay_TipDock">Window Position (Floating / Bottom / Top)</sys:String>
     <sys:String x:Key="Overlay_TipClickThrough">Click Through</sys:String>
 
     <!--============================================================
@@ -198,9 +200,21 @@
     <sys:String x:Key="Msg_DeleteAllHistoryTitle">Do you want to delete all history?</sys:String>
     <sys:String x:Key="Common_Yes">Yes</sys:String>
     <sys:String x:Key="Common_No">No</sys:String>
+    <sys:String x:Key="Common_Cancel">Cancel</sys:String>
 
     <sys:String x:Key="Msg_TestTitle">Connection Test</sys:String>
     <sys:String x:Key="Msg_TestSuccess">Connection OK.</sys:String>
     <sys:String x:Key="Msg_TestFailed">Connection failed.</sys:String>
+    <sys:String x:Key="Msg_TestFailedDetail">Connection failed: {0}</sys:String>
+
+    <!-- Close button: keep running in the background instead of exiting -->
+    <sys:String x:Key="Msg_CloseTitle">Close</sys:String>
+    <sys:String x:Key="Msg_CloseBody">The application keeps running in the background when this window is closed.&#x0A;Minimize it to the background, or exit the application?</sys:String>
+    <sys:String x:Key="Msg_CloseToBackground">Minimize to background</sys:String>
+    <sys:String x:Key="Msg_CloseExit">Exit application</sys:String>
+    <sys:String x:Key="Msg_CloseToBackgroundTitle">Still running in the background</sys:String>
+    <sys:String x:Key="Msg_CloseToBackgroundBody">The window was hidden to the tray and translation keeps running in the background.&#x0A;Double-click the tray icon to reopen the window.</sys:String>
+    <sys:String x:Key="Msg_TrayShow">Show window</sys:String>
+    <sys:String x:Key="Msg_TrayExit">Exit</sys:String>
 
 </ResourceDictionary>

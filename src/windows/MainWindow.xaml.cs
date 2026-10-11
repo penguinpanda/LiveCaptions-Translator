@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using Wpf.Ui.Appearance;
@@ -15,9 +16,13 @@ namespace LiveCaptionsTranslator
         public OverlayWindow? OverlayWindow { get; set; } = null;
         public bool IsAutoHeight { get; set; } = true;
 
+        private bool exitRequested = false;
+        private bool closeDialogVisible = false;
+
         public MainWindow()
         {
             InitializeComponent();
+            Closing += MainWindow_Closing;
             ApplicationThemeManager.ApplySystemTheme();
 
             Loaded += (s, e) =>
@@ -62,10 +67,8 @@ namespace LiveCaptionsTranslator
                 symbolIcon.Filled = true;
 
                 OverlayWindow = new OverlayWindow();
-                OverlayWindow.SizeChanged +=
-                    (s, e) => WindowHandler.SaveState(OverlayWindow, Translator.Setting);
-                OverlayWindow.LocationChanged +=
-                    (s, e) => WindowHandler.SaveState(OverlayWindow, Translator.Setting);
+                OverlayWindow.SizeChanged += (s, e) => OverlayWindow?.SaveFloatingState();
+                OverlayWindow.LocationChanged += (s, e) => OverlayWindow?.SaveFloatingState();
 
                 double screenWidth = SystemParameters.PrimaryScreenWidth;
                 double screenHeight = SystemParameters.PrimaryScreenHeight;
@@ -80,6 +83,7 @@ namespace LiveCaptionsTranslator
                 else
                     WindowHandler.RestoreState(OverlayWindow, windowState);
 
+                OverlayWindow.ApplyDock();
                 OverlayWindow.Show();
             }
             else
@@ -139,6 +143,82 @@ namespace LiveCaptionsTranslator
         {
             MainWindow_LocationChanged(sender, e);
             IsAutoHeight = false;
+        }
+
+        /// <summary>
+        /// Closing the window would end the whole application (<c>ShutdownMode.OnMainWindowClose</c>),
+        /// so the user is asked first whether the application should keep running in the background.
+        /// </summary>
+        private async void MainWindow_Closing(object? sender, CancelEventArgs e)
+        {
+            if (exitRequested)
+                return;
+
+            // Cancel the close and decide asynchronously; the window must never disappear silently.
+            e.Cancel = true;
+            if (closeDialogVisible)
+                return;
+
+            closeDialogVisible = true;
+            try
+            {
+                var dialog = new Wpf.Ui.Controls.MessageBox
+                {
+                    Owner = this,
+                    Title = LocalizationService.Get("Msg_CloseTitle"),
+                    Content = LocalizationService.Get("Msg_CloseBody"),
+                    PrimaryButtonText = LocalizationService.Get("Msg_CloseToBackground"),
+                    SecondaryButtonText = LocalizationService.Get("Msg_CloseExit"),
+                    CloseButtonText = LocalizationService.Get("Common_Cancel")
+                };
+
+                switch (await dialog.ShowDialogAsync())
+                {
+                    case Wpf.Ui.Controls.MessageBoxResult.Primary:
+                        MinimizeToBackground();
+                        break;
+                    case Wpf.Ui.Controls.MessageBoxResult.Secondary:
+                        exitRequested = true;
+                        Close();
+                        break;
+                }
+            }
+            finally
+            {
+                closeDialogVisible = false;
+            }
+        }
+
+        private void MinimizeToBackground()
+        {
+            Hide();
+            try
+            {
+                ToastWindow.ShowToast(
+                    LocalizationService.Get("Msg_CloseToBackgroundTitle"),
+                    LocalizationService.Get("Msg_CloseToBackgroundBody"));
+            }
+            catch
+            {
+                // The window is already hidden; a failed hint must not break background mode.
+            }
+        }
+
+        private void RestoreFromBackground()
+        {
+            Show();
+            WindowState = WindowState.Normal;
+            Activate();
+        }
+
+        private void TrayIcon_LeftClick(object sender, RoutedEventArgs e) => RestoreFromBackground();
+
+        private void TrayShowMenuItem_Click(object sender, RoutedEventArgs e) => RestoreFromBackground();
+
+        private void TrayExitMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            exitRequested = true;
+            Close();
         }
 
         public void ToggleTopmost(bool enabled)

@@ -88,8 +88,8 @@ namespace LiveCaptionsTranslator
         }
 
         /// <summary>
-        /// Sends a short sample sentence through the API of the section this button belongs to
-        /// and reports only whether the round trip succeeded.
+        /// Sends a short sample sentence through the API of the section this button belongs to.
+        /// Reports whether the round trip succeeded and, on failure, the reason returned by the API.
         /// </summary>
         private async void TestButton_Click(object sender, RoutedEventArgs e)
         {
@@ -100,16 +100,22 @@ namespace LiveCaptionsTranslator
             try
             {
                 bool ok = false;
+                string failureReason = string.Empty;
                 if (TranslateAPI.TRANSLATE_FUNCTIONS.TryGetValue(apiName, out var translate))
                 {
                     const string testText = "Hello, how are you?";
                     string result = await translate(testText, CancellationToken.None);
                     ok = !string.IsNullOrWhiteSpace(result) &&
                          !result.Contains("[ERROR]") && !result.Contains("[WARNING]");
+                    if (!ok)
+                        failureReason = result;
                 }
 
                 System.Windows.MessageBox.Show(
-                    LocalizationService.Get(ok ? "Msg_TestSuccess" : "Msg_TestFailed"),
+                    ok ? LocalizationService.Get("Msg_TestSuccess")
+                       : string.IsNullOrWhiteSpace(failureReason)
+                           ? LocalizationService.Get("Msg_TestFailed")
+                           : LocalizationService.Format("Msg_TestFailedDetail", failureReason),
                     LocalizationService.Get("Msg_TestTitle"),
                     System.Windows.MessageBoxButton.OK,
                     ok ? System.Windows.MessageBoxImage.Information : System.Windows.MessageBoxImage.Warning);
@@ -208,54 +214,59 @@ namespace LiveCaptionsTranslator
 
         private async void LoadModelsButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.Tag is string apiName && apiName == "LMStudio")
-            {
-                string baseUrl = (Translator.Setting["LMStudio"] as LMStudioConfig)?.ApiUrl ?? "";
+            if (sender is not Button button || button.Tag is not string apiName ||
+                !ModelsApiService.APIs_WITH_MODELS_ENDPOINT.Contains(apiName))
+                return;
 
-                if (string.IsNullOrWhiteSpace(baseUrl))
-                {
-                    System.Windows.MessageBox.Show(LocalizationService.Get("Msg_SetApiUrlFirst"),
+            string baseUrl = Translator.Setting[apiName] switch
+            {
+                LMStudioConfig lmStudio => lmStudio.ApiUrl,
+                OllamaConfig ollama => ollama.ApiUrl,
+                _ => ""
+            };
+
+            if (string.IsNullOrWhiteSpace(baseUrl))
+            {
+                System.Windows.MessageBox.Show(LocalizationService.Get("Msg_SetApiUrlFirst"),
+                    LocalizationService.Get("Msg_LoadModelsTitle"),
+                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                return;
+            }
+
+            button.IsEnabled = false;
+            try
+            {
+                var models = await ModelsApiService.FetchModelsAsync(apiName, baseUrl);
+                var comboBox = FindName($"{apiName}ModelComboBox") as ComboBox;
+                if (comboBox == null)
+                    return;
+
+                comboBox.ItemsSource = models;
+                if (models.Count > 0)
+                    System.Windows.MessageBox.Show(LocalizationService.Format("Msg_LoadedModels", models.Count),
+                        LocalizationService.Get("Msg_LoadModelsTitle"),
+                        System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                else
+                    System.Windows.MessageBox.Show(LocalizationService.Get("Msg_NoModelsFound"),
                         LocalizationService.Get("Msg_LoadModelsTitle"),
                         System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
-                    return;
-                }
-
-                button.IsEnabled = false;
-                try
-                {
-                    var models = await ModelsApiService.FetchModelsAsync(apiName, baseUrl);
-                    var comboBox = FindName($"{apiName}ModelComboBox") as ComboBox;
-                    if (comboBox != null)
-                    {
-                        comboBox.ItemsSource = models;
-                        if (models.Count > 0)
-                            System.Windows.MessageBox.Show(LocalizationService.Format("Msg_LoadedModels", models.Count),
-                                LocalizationService.Get("Msg_LoadModelsTitle"),
-                                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
-                        else
-                            System.Windows.MessageBox.Show(LocalizationService.Get("Msg_NoModelsFound"),
-                                LocalizationService.Get("Msg_LoadModelsTitle"),
-                                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
-                    }
-                }
-                finally
-                {
-                    button.IsEnabled = true;
-                }
+            }
+            finally
+            {
+                button.IsEnabled = true;
             }
         }
 
-        private void LMStudioModelComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ModelComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Count > 0 && e.AddedItems[0] is ModelsApiService.ModelInfo mi)
+            if (sender is not ComboBox comboBox || comboBox.Tag is not string apiName)
+                return;
+
+            if (e.AddedItems.Count > 0 && e.AddedItems[0] is ModelsApiService.ModelInfo mi &&
+                Translator.Setting[apiName] is BaseLLMConfig config)
             {
-                var config = Translator.Setting["LMStudio"] as LMStudioConfig;
-                if (config != null)
-                {
-                    config.ModelName = mi.Id;
-                    if (sender is ComboBox cb)
-                        cb.Text = mi.Id;
-                }
+                config.ModelName = mi.Id;
+                comboBox.Text = mi.Id;
             }
         }
 

@@ -10,6 +10,7 @@ using Wpf.Ui.Controls;
 
 using LiveCaptionsTranslator.apis;
 using LiveCaptionsTranslator.Utils;
+using LiveCaptionsTranslator.utils;
 using Button = Wpf.Ui.Controls.Button;
 using Color = System.Windows.Media.Color;
 using ColorEnum = LiveCaptionsTranslator.Utils.Color;
@@ -65,12 +66,96 @@ namespace LiveCaptionsTranslator
             BorderBackground.Opacity = Translator.Setting.OverlayWindow.Opacity;
 
             ApplyFontSize();
+            ApplyFontAlign();
             ApplyBackgroundOpacity();
+            ApplyDock();
+
+            // Docked windows stay glued to the screen edge while the content changes height.
+            SizeChanged += (s, e) =>
+            {
+                if (Translator.Setting.OverlayWindow.Dock != Utils.OverlayDock.Floating)
+                    ApplyDock();
+            };
+        }
+
+        /// <summary>
+        /// Saves the free position, skipped while docked so a dock never overwrites it.
+        /// </summary>
+        public void SaveFloatingState()
+        {
+            if (Translator.Setting.OverlayWindow.Dock == Utils.OverlayDock.Floating)
+                WindowHandler.SaveState(this, Translator.Setting);
+        }
+
+        /// <summary>
+        /// Applies the configured position: docked across the screen edge (like the Live Captions bar)
+        /// or the free position it had before.
+        /// </summary>
+        public void ApplyDock()
+        {
+            Utils.OverlayDock dock = Translator.Setting.OverlayWindow.Dock;
+            Rect workArea = SystemParameters.WorkArea;
+
+            if (dock == Utils.OverlayDock.Floating)
+            {
+                Rect bounds = WindowHandler.LoadState(this, Translator.Setting);
+                double screenWidth = SystemParameters.PrimaryScreenWidth;
+                double screenHeight = SystemParameters.PrimaryScreenHeight;
+
+                if (!bounds.IsEmpty && bounds.Left > 0 && bounds.Left < screenWidth &&
+                    bounds.Top > 0 && bounds.Top < screenHeight)
+                {
+                    Left = bounds.Left;
+                    Top = bounds.Top;
+                    Width = Math.Max(bounds.Width, MinWidth);
+                }
+            }
+            else
+            {
+                Width = workArea.Width;
+                Left = workArea.Left;
+                Top = dock == Utils.OverlayDock.Bottom ? workArea.Bottom - Height : workArea.Top;
+            }
+
+            UpdateDockIcon(dock);
+        }
+
+        private void DockCycle_Click(object sender, RoutedEventArgs e)
+        {
+            var setting = Translator.Setting.OverlayWindow;
+
+            Utils.OverlayDock next = setting.Dock switch
+            {
+                Utils.OverlayDock.Floating => Utils.OverlayDock.Bottom,
+                Utils.OverlayDock.Bottom => Utils.OverlayDock.Top,
+                _ => Utils.OverlayDock.Floating
+            };
+
+            // Remember where it was before docking, so leaving the dock restores it.
+            if (setting.Dock == Utils.OverlayDock.Floating)
+                WindowHandler.SaveState(this, Translator.Setting);
+
+            setting.Dock = next;
+            ApplyDock();
+        }
+
+        private void UpdateDockIcon(Utils.OverlayDock dock)
+        {
+            if (DockButton.Icon is not SymbolIcon icon)
+                return;
+
+            icon.Symbol = dock switch
+            {
+                Utils.OverlayDock.Bottom => SymbolRegular.AlignBottom20,
+                Utils.OverlayDock.Top => SymbolRegular.AlignTop20,
+                _ => SymbolRegular.Drag20
+            };
         }
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed &&
+                Translator.Setting.OverlayWindow.Dock == Utils.OverlayDock.Floating)
                 this.DragMove();
         }
 
@@ -225,6 +310,17 @@ namespace LiveCaptionsTranslator
             UpdateTranslationColor(colorMap[Translator.Setting.OverlayWindow.FontColor]);
         }
 
+        private void FontAlignCycle_Click(object sender, RoutedEventArgs e)
+        {
+            Translator.Setting.OverlayWindow.FontAlign = Translator.Setting.OverlayWindow.FontAlign switch
+            {
+                Utils.FontAlign.Center => Utils.FontAlign.Right,
+                Utils.FontAlign.Right => Utils.FontAlign.Left,
+                _ => Utils.FontAlign.Center
+            };
+            ApplyFontAlign();
+        }
+
         private void BackgroundOpacityIncrease_Click(object sender, RoutedEventArgs e)
         {
             if (Translator.Setting.OverlayWindow.Opacity + StyleConsts.DELTA_OPACITY < StyleConsts.MAX_OPACITY)
@@ -348,6 +444,29 @@ namespace LiveCaptionsTranslator
         {
             OriginalCaptionDecorator.StrokeThickness = Translator.Setting.OverlayWindow.FontStroke;
             TranslatedCaptionDecorator.StrokeThickness = Translator.Setting.OverlayWindow.FontStroke;
+        }
+
+        public void ApplyFontAlign()
+        {
+            var setting = Translator.Setting.OverlayWindow;
+
+            TextAlignment alignment = setting.FontAlign switch
+            {
+                Utils.FontAlign.Center => TextAlignment.Center,
+                Utils.FontAlign.Right => TextAlignment.Right,
+                _ => TextAlignment.Left
+            };
+
+            OriginalCaption.TextAlignment = alignment;
+            TranslatedCaption.TextAlignment = alignment;
+
+            if (FontAlignButton.Icon is SymbolIcon icon)
+                icon.Symbol = setting.FontAlign switch
+                {
+                    Utils.FontAlign.Center => SymbolRegular.TextAlignCenter20,
+                    Utils.FontAlign.Right => SymbolRegular.TextAlignRight20,
+                    _ => SymbolRegular.TextAlignLeft20
+                };
         }
 
         public void ApplyBackgroundOpacity()

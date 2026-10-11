@@ -289,18 +289,35 @@
                                                 <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
 
+                                            <!-- Row 0: Model Name spans both columns -->
                                             <StackPanel
                                                 Grid.Row="0"
                                                 Grid.Column="0"
+                                                Grid.ColumnSpan="2"
                                                 Margin="15,0,0,0"
                                                 Orientation="Vertical">
                                                 <ui:TextBlock Margin="2.5,0,0,5" Text="{DynamicResource Common_ModelName}" />
-                                                <ui:TextBox
-                                                    Width="130"
-                                                    Height="30"
-                                                    Padding="10,4,10,7"
-                                                    FontSize="13.3"
-                                                    Text="{Binding [Ollama].ModelName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <StackPanel Orientation="Horizontal">
+                                                    <ComboBox
+                                                        x:Name="OllamaModelComboBox"
+                                                        Width="250"
+                                                        Height="30"
+                                                        Padding="10,4,10,7"
+                                                        FontSize="13.3"
+                                                        IsEditable="True"
+                                                        DisplayMemberPath="Id"
+                                                        SelectedValuePath="Id"
+                                                        Tag="Ollama"
+                                                        Text="{Binding [Ollama].ModelName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        SelectionChanged="ModelComboBox_SelectionChanged" />
+                                                    <ui:Button
+                                                        x:Name="OllamaLoadModelsButton"
+                                                        Margin="10,0,0,0"
+                                                        Padding="8,4,8,4"
+                                                        Content="{DynamicResource Common_LoadModels}"
+                                                        Click="LoadModelsButton_Click"
+                                                        Tag="Ollama" />
+                                                </StackPanel>
                                             </StackPanel>
                                             <StackPanel
                                                 Grid.Row="1"
@@ -320,10 +337,11 @@
                                                     SmallChange="0.1"
                                                     Value="{Binding [Ollama].Temperature, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                             </StackPanel>
+                                            <!-- Row 1 Col 1: API Url -->
                                             <StackPanel
-                                                Grid.Row="0"
+                                                Grid.Row="1"
                                                 Grid.Column="1"
-                                                Margin="15,0,0,0"
+                                                Margin="15,10,0,0"
                                                 Orientation="Vertical">
                                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                                     <ui:TextBlock Margin="2.5,0,0,5" Text="{DynamicResource Common_ApiUrl}" />
@@ -349,6 +367,7 @@
                                                 <ui:TextBox
                                                     Width="200"
                                                     Height="30"
+                                                    Margin="0,5,0,0"
                                                     Padding="10,4,10,7"
                                                     FontSize="13.3"
                                                     Text="{Binding [Ollama].ApiUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -443,8 +462,9 @@
                                                         IsEditable="True"
                                                         DisplayMemberPath="Id"
                                                         SelectedValuePath="Id"
+                                                        Tag="LMStudio"
                                                         Text="{Binding [LMStudio].ModelName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                        SelectionChanged="LMStudioModelComboBox_SelectionChanged" />
+                                                        SelectionChanged="ModelComboBox_SelectionChanged" />
                                                     <ui:Button
                                                         x:Name="LMStudioLoadModelsButton"
                                                         Margin="10,0,0,0"

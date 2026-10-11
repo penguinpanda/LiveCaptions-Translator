@@ -168,11 +168,13 @@
     <sys:String x:Key="Overlay_TipStrokeDecrease">减小描边</sys:String>
     <sys:String x:Key="Overlay_TipFontBold">文字加粗</sys:String>
     <sys:String x:Key="Overlay_TipFontColor">文字颜色</sys:String>
+    <sys:String x:Key="Overlay_TipFontAlign">文字对齐（左 / 居中 / 右）</sys:String>
     <sys:String x:Key="Overlay_TipOpacityIncrease">提高背景不透明度</sys:String>
     <sys:String x:Key="Overlay_TipOpacityDecrease">降低背景不透明度</sys:String>
     <sys:String x:Key="Overlay_TipBackgroundColor">背景颜色</sys:String>
     <sys:String x:Key="Overlay_TipOnlyMode">仅显示字幕或译文</sys:String>
     <sys:String x:Key="Overlay_TipSwitchMode">交换字幕与译文的顺序</sys:String>
+    <sys:String x:Key="Overlay_TipDock">窗口位置（悬浮 / 贴底 / 贴顶）</sys:String>
     <sys:String x:Key="Overlay_TipClickThrough">鼠标穿透</sys:String>
 
     <!--============================================================
@@ -198,9 +200,21 @@
     <sys:String x:Key="Msg_DeleteAllHistoryTitle">确定要删除全部历史记录吗？</sys:String>
     <sys:String x:Key="Common_Yes">是</sys:String>
     <sys:String x:Key="Common_No">否</sys:String>
+    <sys:String x:Key="Common_Cancel">取消</sys:String>
 
     <sys:String x:Key="Msg_TestTitle">连接测试</sys:String>
     <sys:String x:Key="Msg_TestSuccess">连接成功。</sys:String>
     <sys:String x:Key="Msg_TestFailed">连接失败。</sys:String>
+    <sys:String x:Key="Msg_TestFailedDetail">连接失败：{0}</sys:String>
+
+    <!-- 点击关闭：最小化到后台而不是直接退出 -->
+    <sys:String x:Key="Msg_CloseTitle">关闭</sys:String>
+    <sys:String x:Key="Msg_CloseBody">关闭窗口后程序会继续在后台运行。&#x0A;要最小化到后台，还是退出程序？</sys:String>
+    <sys:String x:Key="Msg_CloseToBackground">最小化到后台</sys:String>
+    <sys:String x:Key="Msg_CloseExit">退出程序</sys:String>
+    <sys:String x:Key="Msg_CloseToBackgroundTitle">仍在后台运行</sys:String>
+    <sys:String x:Key="Msg_CloseToBackgroundBody">窗口已隐藏到托盘，翻译会继续在后台运行。&#x0A;双击托盘图标可重新打开窗口。</sys:String>
+    <sys:String x:Key="Msg_TrayShow">显示主窗口</sys:String>
+    <sys:String x:Key="Msg_TrayExit">退出</sys:String>
 
 </ResourceDictionary>

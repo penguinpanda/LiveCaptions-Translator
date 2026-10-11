@@ -74,10 +74,12 @@ namespace LiveCaptionsTranslator.models
         private int fontSize = 15;
         private Color fontColor = Color.White;
         private FontBold fontBold = FontBold.None;
+        private FontAlign fontAlign = FontAlign.Left;
         private double fontStroke = 0.0;
 
         private Color backgroundColor = Color.Black;
         private int opacity = 150;
+        private OverlayDock dock = OverlayDock.Floating;
 
         public int FontSize
         {
@@ -106,6 +108,15 @@ namespace LiveCaptionsTranslator.models
                 OnPropertyChanged("FontBold");
             }
         }
+        public FontAlign FontAlign
+        {
+            get => fontAlign;
+            set
+            {
+                fontAlign = value;
+                OnPropertyChanged("FontAlign");
+            }
+        }
         public double FontStroke
         {
             get => fontStroke;
@@ -131,6 +142,18 @@ namespace LiveCaptionsTranslator.models
             {
                 opacity = value;
                 OnPropertyChanged("Opacity");
+            }
+        }
+        /// <summary>
+        /// Where the overlay sits: freely movable, or docked to the bottom/top edge of the screen.
+        /// </summary>
+        public OverlayDock Dock
+        {
+            get => dock;
+            set
+            {
+                dock = value;
+                OnPropertyChanged("Dock");
             }
         }
 

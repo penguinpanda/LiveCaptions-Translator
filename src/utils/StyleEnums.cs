@@ -8,6 +8,20 @@ namespace LiveCaptionsTranslator.Utils
         Both = 3
     }
 
+    public enum FontAlign
+    {
+        Left = 0,
+        Center = 1,
+        Right = 2
+    }
+
+    public enum OverlayDock
+    {
+        Floating = 0,
+        Bottom = 1,
+        Top = 2
+    }
+
     public enum CaptionVisible
     {
         Both = 0,

@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:LiveCaptionsTranslator"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tray="clr-namespace:Wpf.Ui.Tray.Controls;assembly=Wpf.Ui.Tray"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="{DynamicResource App_Title}"
     Width="750"
@@ -23,6 +24,28 @@
     mc:Ignorable="d">
 
     <Grid>
+        <!-- Keeps the application reachable while the main window is hidden in the background. -->
+        <tray:NotifyIcon
+            x:Name="TrayIcon"
+            Width="16"
+            Height="16"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FocusOnLeftClick="False"
+            Icon="pack://application:,,,/LiveCaptionsTranslator;component/src/livecaptions-translator.ico"
+            LeftClick="TrayIcon_LeftClick"
+            LeftDoubleClick="TrayIcon_LeftClick"
+            MenuOnRightClick="True"
+            TooltipText="{DynamicResource App_Title}">
+            <tray:NotifyIcon.Menu>
+                <ContextMenu>
+                    <MenuItem Click="TrayShowMenuItem_Click" Header="{DynamicResource Msg_TrayShow}" />
+                    <Separator />
+                    <MenuItem Click="TrayExitMenuItem_Click" Header="{DynamicResource Msg_TrayExit}" />
+                </ContextMenu>
+            </tray:NotifyIcon.Menu>
+        </tray:NotifyIcon>
+
         <Grid x:Name="MainContent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
