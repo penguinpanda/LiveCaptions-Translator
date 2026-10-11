@@ -180,7 +180,7 @@ namespace LiveCaptionsTranslator
             }
             catch (Exception ex)
             {
-                SnackbarHost.Show("[ERROR] Update Check Failed.", ex.Message, SnackbarType.Error,
+                SnackbarHost.Show(LocalizationService.Get("Msg_UpdateCheckFailed"), ex.Message, SnackbarType.Error,
                     timeout: 2, closeButton: true);
 
                 return;
@@ -194,12 +194,10 @@ namespace LiveCaptionsTranslator
             {
                 var dialog = new Wpf.Ui.Controls.MessageBox
                 {
-                    Title = "New Version Available",
-                    Content = $"A new version has been detected: {latestVersion}\n" +
-                              $"Current version: {currentVersion}\n" +
-                              $"Please visit GitHub to download the latest release.",
-                    PrimaryButtonText = "Update",
-                    CloseButtonText = "Ignore this version"
+                    Title = LocalizationService.Get("Msg_NewVersionTitle"),
+                    Content = LocalizationService.Format("Msg_NewVersionBody", latestVersion, currentVersion),
+                    PrimaryButtonText = LocalizationService.Get("Msg_UpdateButton"),
+                    CloseButtonText = LocalizationService.Get("Msg_IgnoreVersionButton")
                 };
                 var result = await dialog.ShowDialogAsync();
 
@@ -216,7 +214,7 @@ namespace LiveCaptionsTranslator
                     }
                     catch (Exception ex)
                     {
-                        SnackbarHost.Show("[ERROR] Open Browser Failed.", ex.Message, SnackbarType.Error,
+                        SnackbarHost.Show(LocalizationService.Get("Msg_OpenBrowserFailed"), ex.Message, SnackbarType.Error,
                             timeout: 2, closeButton: true);
                     }
                 }

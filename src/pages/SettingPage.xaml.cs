@@ -13,6 +13,7 @@ namespace LiveCaptionsTranslator
     public partial class SettingPage : Page
     {
         private static SettingWindow? SettingWindow;
+        private bool languageBoxReady;
 
         public SettingPage()
         {
@@ -24,6 +25,8 @@ namespace LiveCaptionsTranslator
             {
                 (App.Current.MainWindow as MainWindow)?.AutoHeightAdjust(maxHeight: (int)App.Current.MainWindow.MinHeight);
                 CheckForFirstUse();
+                InitLanguageBox();
+                RefreshLiveCaptionsButton();
             };
 
             TranslateAPIBox.ItemsSource = Translator.Setting?.Configs.Keys;
@@ -44,13 +47,40 @@ namespace LiveCaptionsTranslator
             if (isHide)
             {
                 LiveCaptionsHandler.RestoreLiveCaptions(Translator.Window);
-                ButtonText.Text = "Hide";
+                ButtonText.Text = LocalizationService.Get("Common_Hide");
             }
             else
             {
                 LiveCaptionsHandler.HideLiveCaptions(Translator.Window);
-                ButtonText.Text = "Show";
+                ButtonText.Text = LocalizationService.Get("Common_Show");
             }
+        }
+
+        private void InitLanguageBox()
+        {
+            languageBoxReady = false;
+            int index = LocalizationService.SupportedLanguages.IndexOf(
+                Translator.Setting?.Language ?? LocalizationService.English);
+            LanguageBox.SelectedIndex = index < 0 ? 0 : index;
+            languageBoxReady = true;
+        }
+
+        private void LanguageBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!languageBoxReady)
+                return;
+
+            if (LanguageBox.SelectedItem is ComboBoxItem item && item.Tag is string language)
+                Translator.Setting.Language = language;
+        }
+
+        private void RefreshLiveCaptionsButton()
+        {
+            if (Translator.Window == null)
+                return;
+
+            bool isHidden = Translator.Window.Current.BoundingRectangle == Rect.Empty;
+            ButtonText.Text = LocalizationService.Get(isHidden ? "Common_Hide" : "Common_Show");
         }
 
         private void TranslateAPIBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

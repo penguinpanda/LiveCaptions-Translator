@@ -7,6 +7,7 @@ using Wpf.Ui.Controls;
 
 using LiveCaptionsTranslator.apis;
 using LiveCaptionsTranslator.models;
+using LiveCaptionsTranslator.utils;
 using Button = Wpf.Ui.Controls.Button;
 using TextBlock = Wpf.Ui.Controls.TextBlock;
 using ComboBox = System.Windows.Controls.ComboBox;
@@ -154,7 +155,9 @@ namespace LiveCaptionsTranslator
 
                 if (string.IsNullOrWhiteSpace(baseUrl))
                 {
-                    System.Windows.MessageBox.Show("Please set the API URL first.", "Load Models", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                    System.Windows.MessageBox.Show(LocalizationService.Get("Msg_SetApiUrlFirst"),
+                        LocalizationService.Get("Msg_LoadModelsTitle"),
+                        System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
                     return;
                 }
 
@@ -167,9 +170,13 @@ namespace LiveCaptionsTranslator
                     {
                         comboBox.ItemsSource = models;
                         if (models.Count > 0)
-                            System.Windows.MessageBox.Show($"Loaded {models.Count} model(s).", "Load Models", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                            System.Windows.MessageBox.Show(LocalizationService.Format("Msg_LoadedModels", models.Count),
+                                LocalizationService.Get("Msg_LoadModelsTitle"),
+                                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                         else
-                            System.Windows.MessageBox.Show("No models found or unable to connect. Check that the server is running.", "Load Models", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                            System.Windows.MessageBox.Show(LocalizationService.Get("Msg_NoModelsFound"),
+                                LocalizationService.Get("Msg_LoadModelsTitle"),
+                                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
                     }
                 }
                 finally

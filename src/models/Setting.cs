@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using System.Windows;
 
 using LiveCaptionsTranslator.apis;
+using LiveCaptionsTranslator.utils;
 
 namespace LiveCaptionsTranslator.models
 {
@@ -24,6 +25,7 @@ namespace LiveCaptionsTranslator.models
         private string apiName;
         private string targetLanguage;
         private string prompt;
+        private string language = LocalizationService.English;
         private string? ignoredUpdateVersion;
 
         private MainWindowState mainWindowState;
@@ -105,6 +107,20 @@ namespace LiveCaptionsTranslator.models
             {
                 ignoredUpdateVersion = value;
                 OnPropertyChanged("IgnoredUpdateVersion");
+            }
+        }
+
+        /// <summary>
+        /// UI language tag, e.g. "en-US" or "zh-CN". See <see cref="LocalizationService.SupportedLanguages"/>.
+        /// </summary>
+        public string Language
+        {
+            get => language;
+            set
+            {
+                language = value;
+                LocalizationService.Apply(value);
+                OnPropertyChanged("Language");
             }
         }
 
