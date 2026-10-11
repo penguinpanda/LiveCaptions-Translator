@@ -257,6 +257,11 @@
                                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                                 <ui:Button
                                                     Margin="0,0,10,0"
+                                                    Click="TestButton_Click"
+                                                    Content="{DynamicResource Common_Test}"
+                                                    Tag="Ollama" />
+                                                <ui:Button
+                                                    Margin="0,0,10,0"
                                                     Click="NewButton_Click"
                                                     Content="{DynamicResource Common_New}"
                                                     Tag="Ollama" />
@@ -386,6 +391,11 @@
                                                     Tag="LMStudio" />
                                             </StackPanel>
                                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                                <ui:Button
+                                                    Margin="0,0,10,0"
+                                                    Click="TestButton_Click"
+                                                    Content="{DynamicResource Common_Test}"
+                                                    Tag="LMStudio" />
                                                 <ui:Button
                                                     Margin="0,0,10,0"
                                                     Click="NewButton_Click"
@@ -540,6 +550,11 @@
                                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                                 <ui:Button
                                                     Margin="0,0,10,0"
+                                                    Click="TestButton_Click"
+                                                    Content="{DynamicResource Common_Test}"
+                                                    Tag="OpenAI" />
+                                                <ui:Button
+                                                    Margin="0,0,10,0"
                                                     Click="NewButton_Click"
                                                     Content="{DynamicResource Common_New}"
                                                     Tag="OpenAI" />
@@ -684,6 +699,11 @@
                                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                                 <ui:Button
                                                     Margin="0,0,10,0"
+                                                    Click="TestButton_Click"
+                                                    Content="{DynamicResource Common_Test}"
+                                                    Tag="OpenRouter" />
+                                                <ui:Button
+                                                    Margin="0,0,10,0"
                                                     Click="NewButton_Click"
                                                     Content="{DynamicResource Common_New}"
                                                     Tag="OpenRouter" />
@@ -795,6 +815,11 @@
                                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                                 <ui:Button
                                                     Margin="0,0,10,0"
+                                                    Click="TestButton_Click"
+                                                    Content="{DynamicResource Common_Test}"
+                                                    Tag="DeepL" />
+                                                <ui:Button
+                                                    Margin="0,0,10,0"
                                                     Click="NewButton_Click"
                                                     Content="{DynamicResource Common_New}"
                                                     Tag="DeepL" />
@@ -883,6 +908,11 @@
                                                     Tag="Youdao" />
                                             </StackPanel>
                                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                                <ui:Button
+                                                    Margin="0,0,10,0"
+                                                    Click="TestButton_Click"
+                                                    Content="{DynamicResource Common_Test}"
+                                                    Tag="Youdao" />
                                                 <ui:Button
                                                     Margin="0,0,10,0"
                                                     Click="NewButton_Click"
@@ -990,6 +1020,11 @@
                                                     Tag="MTranServer" />
                                             </StackPanel>
                                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                                <ui:Button
+                                                    Margin="0,0,10,0"
+                                                    Click="TestButton_Click"
+                                                    Content="{DynamicResource Common_Test}"
+                                                    Tag="MTranServer" />
                                                 <ui:Button
                                                     Margin="0,0,10,0"
                                                     Click="NewButton_Click"
@@ -1105,6 +1140,11 @@
                                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                                 <ui:Button
                                                     Margin="0,0,10,0"
+                                                    Click="TestButton_Click"
+                                                    Content="{DynamicResource Common_Test}"
+                                                    Tag="Baidu" />
+                                                <ui:Button
+                                                    Margin="0,0,10,0"
                                                     Click="NewButton_Click"
                                                     Content="{DynamicResource Common_New}"
                                                     Tag="Baidu" />
@@ -1209,6 +1249,11 @@
                                                     Tag="LibreTranslate" />
                                             </StackPanel>
                                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                                <ui:Button
+                                                    Margin="0,0,10,0"
+                                                    Click="TestButton_Click"
+                                                    Content="{DynamicResource Common_Test}"
+                                                    Tag="LibreTranslate" />
                                                 <ui:Button
                                                     Margin="0,0,10,0"
                                                     Click="NewButton_Click"

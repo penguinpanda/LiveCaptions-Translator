@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 
+using LiveCaptionsTranslator.apis;
 using LiveCaptionsTranslator.utils;
 
 namespace LiveCaptionsTranslator
@@ -21,6 +22,7 @@ namespace LiveCaptionsTranslator
             // Applied here (not in the constructor) because App.xaml resources are
             // only loaded after the constructor runs.
             LocalizationService.Apply(Translator.Setting?.Language);
+            TranslateAPI.ApplyTimeout(Translator.Setting?.NetworkTimeout ?? 30);
 
             base.OnStartup(e);
         }

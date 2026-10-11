@@ -30,6 +30,7 @@ namespace LiveCaptionsTranslator
                 SystemThemeWatcher.Watch(this, WindowBackdropType.Mica, true);
                 Initialize();
                 SelectButton(PromptButton);
+                ShowSection("Prompt");
             };
         }
 
@@ -86,6 +87,46 @@ namespace LiveCaptionsTranslator
             }
         }
 
+        /// <summary>
+        /// Sends a short sample sentence through the API of the section this button belongs to
+        /// and reports only whether the round trip succeeded.
+        /// </summary>
+        private async void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button button || button.Tag is not string apiName)
+                return;
+
+            button.IsEnabled = false;
+            try
+            {
+                bool ok = false;
+                if (TranslateAPI.TRANSLATE_FUNCTIONS.TryGetValue(apiName, out var translate))
+                {
+                    const string testText = "Hello, how are you?";
+                    string result = await translate(testText, CancellationToken.None);
+                    ok = !string.IsNullOrWhiteSpace(result) &&
+                         !result.Contains("[ERROR]") && !result.Contains("[WARNING]");
+                }
+
+                System.Windows.MessageBox.Show(
+                    LocalizationService.Get(ok ? "Msg_TestSuccess" : "Msg_TestFailed"),
+                    LocalizationService.Get("Msg_TestTitle"),
+                    System.Windows.MessageBoxButton.OK,
+                    ok ? System.Windows.MessageBoxImage.Information : System.Windows.MessageBoxImage.Warning);
+            }
+            catch
+            {
+                System.Windows.MessageBox.Show(
+                    LocalizationService.Get("Msg_TestFailed"),
+                    LocalizationService.Get("Msg_TestTitle"),
+                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+            finally
+            {
+                button.IsEnabled = true;
+            }
+        }
+
         private void PriorButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button)
@@ -111,10 +152,28 @@ namespace LiveCaptionsTranslator
             if (sender is System.Windows.Controls.Button button)
             {
                 SelectButton(button);
-                string targetSection = button.Tag.ToString();
-                if (sectionReferences.TryGetValue(targetSection, out FrameworkElement element))
-                    element.BringIntoView();
+                ShowSection(button.Tag?.ToString());
             }
+        }
+
+        /// <summary>
+        /// Shows only the selected section instead of scrolling through all of them.
+        /// </summary>
+        private void ShowSection(string? section)
+        {
+            if (string.IsNullOrEmpty(section) || sectionReferences == null)
+                return;
+
+            foreach (var pair in sectionReferences)
+            {
+                // "General" maps to the container panel, which must never be hidden.
+                if (pair.Key == "General" || pair.Value == null)
+                    continue;
+
+                pair.Value.Visibility = pair.Key == section ? Visibility.Visible : Visibility.Collapsed;
+            }
+
+            ContentScrollViewer?.ScrollToTop();
         }
 
         private void OpenAIAPIUrlInfo_MouseEnter(object sender, MouseEventArgs e)

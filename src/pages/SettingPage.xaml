@@ -10,7 +10,11 @@
     JournalEntry.KeepAlive="False"
     mc:Ignorable="d">
 
-    <Grid Margin="15">
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
@@ -20,7 +24,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0" Orientation="Vertical">
-            <StackPanel Margin="15,0,0,0" Orientation="Vertical">
+            <StackPanel Margin="8,0,0,0" Orientation="Vertical">
                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                     <TextBlock Margin="2.5,0,0,5" Text="{DynamicResource SettingPage_LiveCaptions}" />
                     <ui:Flyout x:Name="LiveCaptionsInfoFlyout">
@@ -52,43 +56,10 @@
                     <TextBlock x:Name="ButtonText" Text="{DynamicResource Common_Show}" />
                 </ui:Button>
             </StackPanel>
-
-            <StackPanel Margin="15,10,0,0" Orientation="Vertical">
-                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                    <TextBlock Margin="2.5,0,0,5" Text="{DynamicResource SettingPage_ApiInterval}" />
-                    <ui:Flyout x:Name="FrequencyInfoFlyout">
-                        <TextBlock
-                            Width="300"
-                            Text="{DynamicResource SettingPage_FlyoutInterval_1}"
-                            TextWrapping="Wrap" />
-                    </ui:Flyout>
-                    <Button
-                        x:Name="FrequencyInfo"
-                        Width="15"
-                        Height="15"
-                        Margin="-5,-3,0,0"
-                        Padding="0"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        MouseEnter="FrequencyInfo_MouseEnter"
-                        MouseLeave="FrequencyInfo_MouseLeave">
-                        <ui:SymbolIcon Symbol="Info16" />
-                    </Button>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Slider
-                        Width="120"
-                        Margin="0,0,5,0"
-                        AutoToolTipPlacement="TopLeft"
-                        AutoToolTipPrecision="0"
-                        Maximum="10"
-                        Value="{Binding MaxSyncInterval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                </StackPanel>
-            </StackPanel>
         </StackPanel>
 
         <StackPanel Grid.Column="1" Orientation="Vertical">
-            <StackPanel Margin="15,0,0,0" Orientation="Vertical">
+            <StackPanel Margin="8,0,0,0" Orientation="Vertical">
                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                     <TextBlock Margin="2.5,0,0,5" Text="{DynamicResource SettingPage_TranslateApi}" />
                     <ui:Flyout x:Name="TranslateAPIInfoFlyout">
@@ -119,46 +90,10 @@
                     SelectedItem="{Binding ApiName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     SelectionChanged="TranslateAPIBox_SelectionChanged" />
             </StackPanel>
-
-            <StackPanel Margin="15,10,0,0" Orientation="Vertical">
-                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                    <TextBlock
-                        Margin="2.5,0,0,5"
-                        VerticalAlignment="Center"
-                        Text="{DynamicResource SettingPage_TargetLanguage}" />
-                    <ui:Flyout x:Name="TargetLangInfoFlyout">
-                        <TextBlock
-                            Width="350"
-                            Text="{DynamicResource SettingPage_FlyoutTargetLang_1}"
-                            TextWrapping="Wrap" />
-                    </ui:Flyout>
-                    <Button
-                        x:Name="TargetLangInfo"
-                        Width="15"
-                        Height="15"
-                        Margin="-5,-3,0,0"
-                        Padding="0"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        MouseEnter="TargetLangInfo_MouseEnter"
-                        MouseLeave="TargetLangInfo_MouseLeave">
-                        <ui:SymbolIcon Symbol="Info16" />
-                    </Button>
-                </StackPanel>
-                <ComboBox
-                    x:Name="TargetLangBox"
-                    Width="150"
-                    Height="30"
-                    Padding="10,4,10,7"
-                    FontSize="13.3"
-                    IsEditable="True"
-                    LostFocus="TargetLangBox_LostFocus"
-                    SelectionChanged="TargetLangBox_SelectionChanged" />
-            </StackPanel>
         </StackPanel>
 
         <StackPanel Grid.Column="2" Orientation="Vertical">
-            <StackPanel Margin="15,0,0,0" Orientation="Vertical">
+            <StackPanel Margin="8,0,0,0" Orientation="Vertical">
                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                     <TextBlock Margin="2.5,0,0,5" Text="{DynamicResource SettingPage_ApiSetting}" />
                 </StackPanel>
@@ -171,34 +106,10 @@
                     <TextBlock Text="{DynamicResource Common_Open}" />
                 </ui:Button>
             </StackPanel>
-            <StackPanel Margin="15,10,0,0" Orientation="Vertical">
-                <TextBlock Margin="2.5,0,0,5" Text="{DynamicResource SettingPage_ShowLatency}" />
-                <ui:ToggleSwitch
-                    Width="100"
-                    Height="30"
-                    Padding="10,4,10,7"
-                    IsChecked="{Binding MainWindow.LatencyShow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    OffContent="{DynamicResource Common_Off}"
-                    OnContent="{DynamicResource Common_On}" />
-            </StackPanel>
-
-            <StackPanel Margin="15,10,0,0" Orientation="Vertical">
-                <TextBlock Margin="2.5,0,0,5" Text="{DynamicResource SettingPage_Language}" />
-                <ComboBox
-                    x:Name="LanguageBox"
-                    Width="120"
-                    Height="30"
-                    Padding="10,4,10,7"
-                    FontSize="13.3"
-                    SelectionChanged="LanguageBox_SelectionChanged">
-                    <ComboBoxItem Content="{DynamicResource SettingPage_LangEnglish}" Tag="en-US" />
-                    <ComboBoxItem Content="{DynamicResource SettingPage_LangChinese}" Tag="zh-CN" />
-                </ComboBox>
-            </StackPanel>
         </StackPanel>
 
         <StackPanel Grid.Column="3" Orientation="Vertical">
-            <StackPanel Margin="15,0,0,0" Orientation="Vertical">
+            <StackPanel Margin="8,0,0,0" Orientation="Vertical">
                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                     <TextBlock Margin="2.5,0,0,5" Text="{DynamicResource SettingPage_Contexts}" />
                     <ui:Flyout x:Name="CaptionLogMaxInfoFlyout">
@@ -235,28 +146,10 @@
                     Value="{Binding NumContexts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     ValueChanged="Contexts_ValueChanged" />
             </StackPanel>
-
-            <StackPanel Margin="15,10,0,0" Orientation="Vertical">
-                <TextBlock Margin="2.5,0,0,5" Text="{DynamicResource SettingPage_DisplaySentences}" />
-                <ui:NumberBox
-                    Width="135"
-                    Height="30"
-                    Padding="10,4,10,7"
-                    FontSize="13.3"
-                    ClearButtonEnabled="False"
-                    AcceptsExpression="False"
-                    SpinButtonPlacementMode="Inline"
-                    Maximum="6"
-                    Minimum="0"
-                    LargeChange="1"
-                    SmallChange="1"
-                    Value="{Binding DisplaySentences, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    ValueChanged="DisplaySentences_ValueChanged" />
-            </StackPanel>
         </StackPanel>
 
         <StackPanel Grid.Column="4" Orientation="Vertical">
-            <StackPanel Margin="15,0,0,0" Orientation="Vertical">
+            <StackPanel Margin="8,0,0,0" Orientation="Vertical">
                 <TextBlock Margin="2.5,0,0,5" Text="{DynamicResource SettingPage_ContextAware}" />
                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                     <ui:ToggleSwitch
@@ -284,6 +177,114 @@
                             Text="{DynamicResource SettingPage_FlyoutContextAware_1}"
                             TextWrapping="Wrap" />
                     </ui:Flyout>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="1"
+            Grid.ColumnSpan="5"
+            Margin="0,10,0,0"
+            Orientation="Horizontal">
+            <StackPanel Margin="8,0,0,0" Orientation="Vertical">
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock Margin="2.5,0,0,5" Text="{DynamicResource SettingPage_ApiInterval}" />
+                    <ui:Flyout x:Name="FrequencyInfoFlyout">
+                        <TextBlock
+                            Width="300"
+                            Text="{DynamicResource SettingPage_FlyoutInterval_1}"
+                            TextWrapping="Wrap" />
+                    </ui:Flyout>
+                    <Button
+                        x:Name="FrequencyInfo"
+                        Width="15"
+                        Height="15"
+                        Margin="-5,-3,0,0"
+                        Padding="0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        MouseEnter="FrequencyInfo_MouseEnter"
+                        MouseLeave="FrequencyInfo_MouseLeave">
+                        <ui:SymbolIcon Symbol="Info16" />
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Slider
+                        Width="120"
+                        Margin="0,0,5,0"
+                        AutoToolTipPlacement="TopLeft"
+                        AutoToolTipPrecision="0"
+                        Maximum="10"
+                        Value="{Binding MaxSyncInterval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Margin="8,0,0,0" Orientation="Vertical">
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock
+                        Margin="2.5,0,0,5"
+                        VerticalAlignment="Center"
+                        Text="{DynamicResource SettingPage_TargetLanguage}" />
+                    <ui:Flyout x:Name="TargetLangInfoFlyout">
+                        <TextBlock
+                            Width="350"
+                            Text="{DynamicResource SettingPage_FlyoutTargetLang_1}"
+                            TextWrapping="Wrap" />
+                    </ui:Flyout>
+                    <Button
+                        x:Name="TargetLangInfo"
+                        Width="15"
+                        Height="15"
+                        Margin="-5,-3,0,0"
+                        Padding="0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        MouseEnter="TargetLangInfo_MouseEnter"
+                        MouseLeave="TargetLangInfo_MouseLeave">
+                        <ui:SymbolIcon Symbol="Info16" />
+                    </Button>
+                </StackPanel>
+                <ComboBox
+                    x:Name="TargetLangBox"
+                    Width="150"
+                    Height="30"
+                    Padding="10,4,10,7"
+                    FontSize="13.3"
+                    IsEditable="True"
+                    LostFocus="TargetLangBox_LostFocus"
+                    SelectionChanged="TargetLangBox_SelectionChanged" />
+            </StackPanel>
+
+            <StackPanel Margin="8,0,0,0" Orientation="Horizontal">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="2.5,0,0,5" Text="{DynamicResource SettingPage_DisplaySentences}" />
+                    <ui:NumberBox
+                        Width="135"
+                        Height="30"
+                        Padding="10,4,10,7"
+                        FontSize="13.3"
+                        ClearButtonEnabled="False"
+                        AcceptsExpression="False"
+                        SpinButtonPlacementMode="Inline"
+                        Maximum="6"
+                        Minimum="0"
+                        LargeChange="1"
+                        SmallChange="1"
+                        Value="{Binding DisplaySentences, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        ValueChanged="DisplaySentences_ValueChanged" />
+                </StackPanel>
+                <StackPanel Margin="15,0,0,0" Orientation="Vertical">
+                    <TextBlock Margin="2.5,0,0,5" Text="{DynamicResource SettingPage_Language}" />
+                    <ComboBox
+                        x:Name="LanguageBox"
+                        Width="120"
+                        Height="30"
+                        Padding="10,4,10,7"
+                        FontSize="13.3"
+                        SelectionChanged="LanguageBox_SelectionChanged">
+                        <ComboBoxItem Content="{DynamicResource SettingPage_LangEnglish}" Tag="en-US" />
+                        <ComboBoxItem Content="{DynamicResource SettingPage_LangChinese}" Tag="zh-CN" />
+                    </ComboBox>
                 </StackPanel>
             </StackPanel>
         </StackPanel>

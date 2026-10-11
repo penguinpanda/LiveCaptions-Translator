@@ -45,10 +45,24 @@ namespace LiveCaptionsTranslator.apis
         public static bool IsLLMBased => LLM_BASED_APIS.Contains(Translator.Setting.ApiName);
         public static string Prompt => Translator.Setting.Prompt;
 
-        private static readonly HttpClient client = new HttpClient()
+        private static HttpClient client = new HttpClient()
         {
-            Timeout = TimeSpan.FromSeconds(8)
+            Timeout = TimeSpan.FromSeconds(DefaultTimeoutSeconds)
         };
+
+        private const int DefaultTimeoutSeconds = 30;
+
+        /// <summary>
+        /// Replaces the shared <see cref="HttpClient"/> so a changed timeout takes effect
+        /// immediately. Requests already in flight keep using the previous instance.
+        /// </summary>
+        public static void ApplyTimeout(int seconds)
+        {
+            client = new HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(Math.Clamp(seconds, 3, 300))
+            };
+        }
         private static int openai_fallback_index = 0;
 
         public static async Task<string> OpenAI(string text, CancellationToken token = default)

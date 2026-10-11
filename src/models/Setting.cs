@@ -26,6 +26,7 @@ namespace LiveCaptionsTranslator.models
         private string targetLanguage;
         private string prompt;
         private string language = LocalizationService.English;
+        private int networkTimeout = 30;
         private string? ignoredUpdateVersion;
 
         private MainWindowState mainWindowState;
@@ -112,6 +113,8 @@ namespace LiveCaptionsTranslator.models
 
         /// <summary>
         /// UI language tag, e.g. "en-US" or "zh-CN". See <see cref="LocalizationService.SupportedLanguages"/>.
+        /// Applying the language is the caller's responsibility, because this property is also set
+        /// while deserializing <c>setting.json</c>, at which point the WPF resource system is not ready yet.
         /// </summary>
         public string Language
         {
@@ -119,8 +122,21 @@ namespace LiveCaptionsTranslator.models
             set
             {
                 language = value;
-                LocalizationService.Apply(value);
                 OnPropertyChanged("Language");
+            }
+        }
+
+        /// <summary>
+        /// HTTP timeout in seconds for translate API requests. Local LLM servers need a
+        /// larger value than remote APIs, so it is user configurable.
+        /// </summary>
+        public int NetworkTimeout
+        {
+            get => networkTimeout;
+            set
+            {
+                networkTimeout = Math.Clamp(value, 3, 300);
+                OnPropertyChanged("NetworkTimeout");
             }
         }
 

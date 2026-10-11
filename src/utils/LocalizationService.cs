@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 
 namespace LiveCaptionsTranslator.utils
@@ -13,8 +14,13 @@ namespace LiveCaptionsTranslator.utils
 
         public static readonly List<string> SupportedLanguages = [English, ChineseSimplified];
 
-        private const string DictionarySourceFormat = "pack://application:,,,/Localization/Strings.{0}.xaml";
+        // Relative pack URI resolved against this assembly, e.g.
+        // "/LiveCaptionsTranslator;component/src/Localization/Strings.zh-CN.xaml".
+        private const string DictionarySourceFormat = "/{0};component/src/Localization/Strings.{1}.xaml";
         private const string DictionarySourceMarker = "/Localization/Strings.";
+
+        private static readonly string AssemblyName =
+            typeof(LocalizationService).Assembly.GetName().Name!;
 
         public static string CurrentLanguage { get; private set; } = English;
 
@@ -26,16 +32,27 @@ namespace LiveCaptionsTranslator.utils
             if (string.IsNullOrWhiteSpace(language) || !SupportedLanguages.Contains(language))
                 language = English;
 
-            CurrentLanguage = language!;
-
             var app = Application.Current;
             if (app == null)
                 return;
 
-            var target = new ResourceDictionary
+            ResourceDictionary target;
+            try
             {
-                Source = new Uri(string.Format(DictionarySourceFormat, language))
-            };
+                target = new ResourceDictionary
+                {
+                    Source = new Uri(string.Format(DictionarySourceFormat, AssemblyName, language), UriKind.Relative)
+                };
+            }
+            catch (IOException)
+            {
+                // The WPF resource system is not ready yet (for example this was called while
+                // deserializing setting.json from a static constructor). Keep the previous
+                // language; App.OnStartup applies it again once resources are available.
+                return;
+            }
+
+            CurrentLanguage = language!;
 
             var dictionaries = app.Resources.MergedDictionaries;
             for (int i = 0; i < dictionaries.Count; i++)

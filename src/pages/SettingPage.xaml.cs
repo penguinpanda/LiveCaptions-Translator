@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Wpf.Ui.Appearance;
 
+using LiveCaptionsTranslator.apis;
 using LiveCaptionsTranslator.models;
 using LiveCaptionsTranslator.utils;
 using Wpf.Ui.Controls;
@@ -14,6 +15,7 @@ namespace LiveCaptionsTranslator
     {
         private static SettingWindow? SettingWindow;
         private bool languageBoxReady;
+        private bool windowFitted;
 
         public SettingPage()
         {
@@ -24,6 +26,7 @@ namespace LiveCaptionsTranslator
             Loaded += (s, e) =>
             {
                 (App.Current.MainWindow as MainWindow)?.AutoHeightAdjust(maxHeight: (int)App.Current.MainWindow.MinHeight);
+                FitWindowToContent();
                 CheckForFirstUse();
                 InitLanguageBox();
                 RefreshLiveCaptionsButton();
@@ -33,6 +36,34 @@ namespace LiveCaptionsTranslator
             TranslateAPIBox.SelectedIndex = 0;
 
             LoadAPISetting();
+        }
+
+        /// <summary>
+        /// Shrinks the main window on first display so the setting page fills it without
+        /// leaving large empty areas. Runs only once, so later manual resizing is kept.
+        /// </summary>
+        private void FitWindowToContent()
+        {
+            if (windowFitted)
+                return;
+
+            if (App.Current.MainWindow is not MainWindow window || Content is not FrameworkElement root)
+                return;
+
+            windowFitted = true;
+
+            root.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+            const double chromeWidth = 70;   // navigation rail + window border
+            const double chromeHeight = 30;  // title bar + window border
+
+            double width = root.DesiredSize.Width + chromeWidth;
+            if (width > window.MinWidth && width < window.Width)
+                window.Width = width;
+
+            double height = root.DesiredSize.Height + chromeHeight;
+            if (height > window.MinHeight && height < window.Height)
+                window.Height = height;
         }
 
         private void LiveCaptionsButton_click(object sender, RoutedEventArgs e)
@@ -71,7 +102,10 @@ namespace LiveCaptionsTranslator
                 return;
 
             if (LanguageBox.SelectedItem is ComboBoxItem item && item.Tag is string language)
+            {
+                LocalizationService.Apply(language);
                 Translator.Setting.Language = language;
+            }
         }
 
         private void RefreshLiveCaptionsButton()
